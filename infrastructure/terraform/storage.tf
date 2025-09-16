@@ -4,7 +4,7 @@ resource "google_filestore_instance" "nfs" {
   tier     = "BASIC_HDD"
   
   file_shares {
-    capacity_gb = 1024
+    capacity_gb = 100
     name        = "share1"
   }
   
