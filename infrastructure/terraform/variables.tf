@@ -10,3 +10,8 @@ variable "region" {
 variable "zone" {
   default = "us-central1-a"
 }
+
+variable "state_bucket" {
+  description = "Terraform state bucket"
+  type        = string
+}
