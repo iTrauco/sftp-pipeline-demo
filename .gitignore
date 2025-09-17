@@ -1,34 +1,393 @@
-# terraform
+# ==========================================
+# Terraform
+# ==========================================
 *.tfstate
 *.tfstate.*
 *.tfvars
 !terraform.tfvars.example
 .terraform/
 .terraform.lock.hcl
+*.terraform.tfstate.lock.info
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
 
-# gcp
+# ==========================================
+# GCP / Cloud
+# ==========================================
 *.json
 gcp-key.json
 credentials.json
+service-account-*.json
+application_default_credentials.json
+.gcloud/
+.gsutil/
+*.p12
+client_secrets.json
+firebase-*.json
+firestore-*.json
 
-# helm values
+# ==========================================
+# Helm / Kubernetes
+# ==========================================
 *-values.yaml
 !*-values.example.yaml
+charts/*.tgz
+*.kubeconfig
+kubeconfig
+.kube/
+*.crt
+*.csr
 
-# python
+# ==========================================
+# Python
+# ==========================================
 __pycache__/
 *.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+pip-wheel-metadata/
+*.dist-info/
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+.hypothesis/
+pytestdebug.log
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+cython_debug/
+.ruff_cache/
+
+# Virtual environments
 .venv/
 venv/
+ENV/
+env/
+.virtualenv/
+.pyenv/
+.python-version
+pipenv-proper-names.txt
+Pipfile.lock
 
-# env files
+# ==========================================
+# Conda
+# ==========================================
+conda-meta/
+envs/
+pkgs/
+*.conda
+*.tar.bz2
+.conda/
+conda-bld/
+.condarc
+
+# ==========================================
+# Jupyter / IPython
+# ==========================================
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+profile_default/
+ipython_config.py
+.ipython/
+.jupyter/
+jupyter_notebook_config.py
+*.nbconvert.ipynb
+
+# ==========================================
+# Data Science / ML
+# ==========================================
+# Datasets
+data/
+datasets/
+raw_data/
+processed_data/
+*.csv
+*.tsv
+*.parquet
+*.feather
+*.h5
+*.hdf5
+*.pkl
+*.pickle
+*.joblib
+*.sav
+*.npy
+*.npz
+*.zarr/
+*.arrow
+*.orc
+*.avro
+*.msgpack
+
+# Model files
+models/
+saved_models/
+checkpoints/
+*.pt
+*.pth
+*.onnx
+*.pb
+*.tflite
+*.mlmodel
+*.pmml
+*.keras
+*.model
+*.weights
+*.safetensors
+wandb/
+mlruns/
+outputs/
+tensorboard/
+logs/
+*.ckpt
+*.ckpt.*
+
+# Large files
+*.bin
+*.dat
+*.db
+*.sqlite
+*.sqlite3
+*.mdb
+*.ldb
+
+# ==========================================
+# Data Engineering
+# ==========================================
+# Spark
+spark-warehouse/
+metastore_db/
+derby.log
+*.crc
+_SUCCESS
+_temporary/
+.spark_cache/
+
+# Airflow
+airflow.db
+airflow.cfg
+unittests.cfg
+webserver_config.py
+airflow-webserver.pid
+standalone_admin_password.txt
+logs/
+plugins/__pycache__/
+
+# Kafka
+kafka-logs/
+zookeeper/
+
+# DBT
+target/
+dbt_modules/
+dbt_packages/
+logs/
+*.dbt/
+
+# ==========================================
+# IDEs and Editors
+# ==========================================
+# VSCode
+.vscode/
+*.code-workspace
+.history/
+
+# PyCharm
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+.vim/
+
+# Emacs
+*~
+\#*\#
+.\#*
+.emacs.desktop
+.emacs.desktop.lock
+
+# ==========================================
+# Environment and Secrets
+# ==========================================
 .env
 *.env
+.env.*
 !.env.example
+!.env.template
+.secrets/
+secrets.yaml
+secrets.json
+config/secrets/
 
-# local
+# ==========================================
+# OS Files
+# ==========================================
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+.directory
+
+# Linux
+.fuse_hidden*
+.Trash-*
+.nfs*
+
+# ==========================================
+# Logs and Temporary Files
+# ==========================================
 *.log
+*.log.*
+logs/
+*.tmp
+*.temp
+*.bak
+*.backup
+*.old
+*.orig
+*.rej
+*.swp
+*.pid
+*.seed
+*.pid.lock
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ==========================================
+# Security
+# ==========================================
 *.key
 *.pem
-kubeconfig
+*.ppk
+*.pub
+*.crt
+*.csr
+*.der
+*.p12
+*.pfx
+*.jks
+id_rsa
+id_rsa.pub
+id_dsa
+id_dsa.pub
+id_ecdsa
+id_ecdsa.pub
+id_ed25519
+id_ed25519.pub
+known_hosts
+authorized_keys
+
+# ==========================================
+# Package Managers
+# ==========================================
+node_modules/
+jspm_packages/
+bower_components/
+vendor/
+
+# ==========================================
+# Testing
+# ==========================================
+.coverage
+*.cover
+.cache
+nosetests.xml
+coverage.xml
+*.coveragerc
+test-results/
+test-reports/
+.nyc_output/
+
+# ==========================================
+# Documentation
+# ==========================================
+docs/_build/
+docs/.doctrees/
+site/
+_build/
+.sphinx/
+
+# ==========================================
+# Artifacts Directory Rules
+# ==========================================
+# Exclude everything in artifacts except docs
+artifacts/*
+!artifacts/docs/
+!artifacts/docs/**
+
+# Explicitly exclude these subdirectories (redundant but clear)
+artifacts/fixes/
+artifacts/implementation/
+artifacts/investigations/
+artifacts/research/
+artifacts/experiments/
+
+# ==========================================
+# Miscellaneous
+# ==========================================
+*.bz2
+*.gz
+*.xz
+*.zip
+*.tar
+*.tgz
+*.rar
+*.7z
+*.dmg
+*.iso
+*.jar
+*.war
+*.ear
+*.patch
+.cache/
+.local/
+.bash_history
+.zsh_history
+.python_history
+.Rhistory
+.RData
+.Ruserdata
