@@ -1,0 +1,40 @@
+{{- if .Values.archiver.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ .Release.Name }}-archiver
+spec:
+  schedule: "{{ .Values.archiver.schedule }}"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: archiver
+            image: google/cloud-sdk:alpine
+            command: ["sh", "-c"]
+            args: ["pip install paramiko google-cloud-storage && python /scripts/archive.py"]
+            env:
+            - name: SFTP_HOST
+              value: {{ .Release.Name }}-sftp-service
+            - name: SFTP_USER
+              value: {{ (index .Values.users 0).username }}
+            - name: SFTP_PASS
+              value: {{ (index .Values.users 0).password }}
+            - name: GCS_BUCKET
+              value: {{ .Values.archiver.gcsBucket }}
+            - name: TRIGGER_DAYS
+              value: "{{ .Values.archiveThresholds.triggerDays }}"
+            - name: SCHEDULER_DAYS
+              value: "{{ .Values.archiveThresholds.schedulerDays }}"
+            - name: USER_DAYS
+              value: "{{ .Values.archiveThresholds.userDays }}"
+            volumeMounts:
+            - name: scripts
+              mountPath: /scripts
+          volumes:
+          - name: scripts
+            configMap:
+              name: {{ .Release.Name }}-scripts
+          restartPolicy: OnFailure
+{{- end }}
