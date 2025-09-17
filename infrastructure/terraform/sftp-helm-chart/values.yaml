@@ -1,0 +1,26 @@
+replicas: 1
+image:
+  repository: atmoz/sftp
+  tag: alpine
+
+service:
+  type: LoadBalancer
+  port: 22
+
+storage:
+  size: 10Gi
+  filestoreIP: "REPLACE_WITH_FILESTORE_IP"
+
+users:
+  - username: REPLACE_USERNAME
+    password: REPLACE_PASSWORD
+    uid: 1001
+
+mockUploader:
+  enabled: true
+  replicas: 1
+
+archiver:
+  enabled: true
+  schedule: "0 6 * * *"
+  gcsBucket: "REPLACE_WITH_BUCKET_NAME"
