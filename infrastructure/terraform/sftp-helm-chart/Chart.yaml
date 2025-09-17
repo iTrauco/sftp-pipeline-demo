@@ -1,0 +1,5 @@
+apiVersion: v2
+name: sftp-system
+description: SFTP server with uploader and archiver
+version: 0.1.0
+appVersion: "1.0"
