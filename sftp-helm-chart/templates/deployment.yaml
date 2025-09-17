@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-sftp  # deployment name
+spec:
+  replicas: {{ .Values.replicas }}  # from sftp-helm-chart/values.yaml
+  selector:
+    matchLabels:
+      app: sftp  # pod selector
+  template:
+    metadata:
+      labels:
+        app: sftp  # pod label
+    spec:
+      containers:
+      - name: sftp  # container name
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"  # from values.yaml
+        ports:
+        - containerPort: 22  # ssh/sftp port
+        args:
+        - "{{ (index .Values.users 0).username }}:{{ (index .Values.users 0).password }}:{{ (index .Values.users 0).uid }}"  # user credentials
+        volumeMounts:
+        - name: storage  # volume name
+          mountPath: "/home/{{ (index .Values.users 0).username }}/upload"  # sftp directory
+      volumes:
+      - name: storage  # volume definition
+        persistentVolumeClaim:
+          claimName: {{ .Release.Name }}-pvc  # from templates/pvc.yaml
