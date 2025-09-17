@@ -24,3 +24,8 @@ archiver:
   enabled: true
   schedule: "0 6 * * *"
   gcsBucket: "REPLACE_WITH_BUCKET_NAME"
+
+archiveThresholds:
+  triggerDays: 5
+  schedulerDays: 14
+  userDays: 30
