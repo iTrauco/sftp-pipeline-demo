@@ -1,28 +1,28 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-sftp
+  name: {{ .Release.Name }}-sftp  # deployment name
 spec:
-  replicas: {{ .Values.replicas }}
+  replicas: {{ .Values.replicas }}  # from sftp-helm-chart/values.yaml
   selector:
     matchLabels:
-      app: sftp
+      app: sftp  # pod selector
   template:
     metadata:
       labels:
-        app: sftp
+        app: sftp  # pod label
     spec:
       containers:
-      - name: sftp
-        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+      - name: sftp  # container name
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"  # from values.yaml
         ports:
-        - containerPort: 22
+        - containerPort: 22  # ssh/sftp port
         args:
-        - "{{ .Values.users[0].username }}:{{ .Values.users[0].password }}:{{ .Values.users[0].uid }}"
+        - "{{ (index .Values.users 0).username }}:{{ (index .Values.users 0).password }}:{{ (index .Values.users 0).uid }}"  # user credentials
         volumeMounts:
-        - name: storage
-          mountPath: /home/{{ .Values.users[0].username }}/upload
+        - name: storage  # volume name
+          mountPath: "/home/{{ (index .Values.users 0).username }}/upload"  # sftp directory
       volumes:
-      - name: storage
+      - name: storage  # volume definition
         persistentVolumeClaim:
-          claimName: {{ .Release.Name }}-pvc
+          claimName: {{ .Release.Name }}-pvc  # from templates/pvc.yaml
