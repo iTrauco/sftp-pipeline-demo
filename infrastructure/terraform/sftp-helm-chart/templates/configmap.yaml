@@ -34,7 +34,6 @@ data:
         metadata = {
             'type': file_type,
             'created': datetime.utcnow().isoformat(),
-            'age_target': '24h',
             'data': f'demo {file_type} content'
         }
         
@@ -43,13 +42,20 @@ data:
         
         sftp.close()
         print(f"Generated {filename} ({file_type})")
-        time.sleep(1800)  # 30 minutes
+        time.sleep(1800)
   archive.py: |
     import paramiko
     import os
     import json
     from datetime import datetime, timedelta
     from google.cloud import storage
+    
+    # Archive thresholds in days
+    thresholds = {
+        'trigger': int(os.environ.get('TRIGGER_DAYS', '5')),
+        'scheduler': int(os.environ.get('SCHEDULER_DAYS', '14')),
+        'user': int(os.environ.get('USER_DAYS', '30'))
+    }
     
     transport = paramiko.Transport((os.environ['SFTP_HOST'], 22))
     transport.connect(username=os.environ['SFTP_USER'], password=os.environ['SFTP_PASS'])
@@ -60,20 +66,21 @@ data:
     bucket = client.bucket(os.environ['GCS_BUCKET'])
     
     for filename in files:
-        # Check file age from filename timestamp
         if '_' in filename:
             parts = filename.split('_')
             if len(parts) >= 3:
-                file_date = parts[1] + parts[2]
-                # Archive files older than 24 hours
+                file_type = parts[0]
                 try:
-                    file_time = datetime.strptime(parts[1], '%Y%m%d')
-                    if datetime.utcnow() - file_time > timedelta(days=1):
+                    file_time = datetime.strptime(parts[1] + parts[2], '%Y%m%d%H%M%S')
+                    age_days = (datetime.utcnow() - file_time).days
+                    threshold = thresholds.get(file_type, 30)
+                    
+                    if age_days >= threshold:
                         sftp.get(f'/upload/{filename}', f'/tmp/{filename}')
-                        blob = bucket.blob(f'archive/{filename}')
+                        blob = bucket.blob(f'archive/{file_type}/{filename}')
                         blob.upload_from_filename(f'/tmp/{filename}')
                         sftp.remove(f'/upload/{filename}')
-                        print(f"Archived {filename}")
-                except:
-                    pass
+                        print(f"Archived {filename} (age: {age_days}d >= {threshold}d)")
+                except Exception as e:
+                    print(f"Skip {filename}: {e}")
     sftp.close()
