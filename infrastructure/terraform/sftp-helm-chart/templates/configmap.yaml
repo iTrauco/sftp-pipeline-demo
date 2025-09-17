@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-scripts
+data:
+  upload.py: |
+    import paramiko
+    import os
+    transport = paramiko.Transport((os.environ['SFTP_HOST'], 22))
+    transport.connect(username=os.environ['SFTP_USER'], password=os.environ['SFTP_PASS'])
+    sftp = paramiko.SFTPClient.from_transport(transport)
+    sftp.put('/tmp/test.txt', '/upload/test.txt')
+    print("Uploaded")
+    sftp.close()
+  mock.py: |
+    import paramiko
+    import os
+    import time
+    import random
+    while True:
+        transport = paramiko.Transport((os.environ['SFTP_HOST'], 22))
+        transport.connect(username=os.environ['SFTP_USER'], password=os.environ['SFTP_PASS'])
+        sftp = paramiko.SFTPClient.from_transport(transport)
+        filename = f"test_{random.randint(1,9999)}.txt"
+        sftp.open(f'/upload/{filename}', 'w').write(b'demo data')
+        sftp.close()
+        print(f"Generated {filename}")
+        time.sleep(30)
+  archive.py: |
+    import paramiko
+    import os
+    from google.cloud import storage
+    transport = paramiko.Transport((os.environ['SFTP_HOST'], 22))
+    transport.connect(username=os.environ['SFTP_USER'], password=os.environ['SFTP_PASS'])
+    sftp = paramiko.SFTPClient.from_transport(transport)
+    files = sftp.listdir('/upload')
+    client = storage.Client()
+    bucket = client.bucket(os.environ['GCS_BUCKET'])
+    for f in files:
+        sftp.get(f'/upload/{f}', f'/tmp/{f}')
+        bucket.blob(f).upload_from_filename(f'/tmp/{f}')
+        sftp.remove(f'/upload/{f}')
+    sftp.close()
